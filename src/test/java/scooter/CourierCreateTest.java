@@ -30,6 +30,12 @@ public class CourierCreateTest {
     // чистим за собой: удаляем созданного курьера
     @After
     public void tearDown() {
+        if (courier != null) {
+            return;
+        }
+        courierId = courierClient.login(new CourierCredentials(courier))
+                .then().extract().path("id");
+
         if (courierId != null) {
             courierClient.delete(courierId);
         }
@@ -49,10 +55,6 @@ public class CourierCreateTest {
         response.then()
                 .statusCode(SC_CREATED)
                 .body("ok", equalTo(true));
-
-        // запоминаем id, чтобы удалить курьера после теста
-        courierId = courierClient.login(new CourierCredentials(courier))
-                .then().extract().path("id");
     }
 
     @Test

@@ -12,12 +12,9 @@ import scooter.model.CourierCredentials;
 import scooter.util.CourierGenerator;
 
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
-import static org.apache.http.HttpStatus.SC_GATEWAY_TIMEOUT;
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_OK;
-import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 
 public class CourierLoginTest {
@@ -75,10 +72,9 @@ public class CourierLoginTest {
         // логинимся без пароля
         Response response = courierClient.login(new CourierCredentials(courier.getLogin(), null));
 
-        // Известный баг сервиса: при отсутствии поля password ручка уходит
-        // в таймаут и возвращает 504 вместо 400. Главное — авторизация не проходит.
+        // ждём 404
         response.then()
-                .statusCode(anyOf(is(SC_BAD_REQUEST), is(SC_GATEWAY_TIMEOUT)));
+                .statusCode(SC_BAD_REQUEST);
     }
 
     @Test
